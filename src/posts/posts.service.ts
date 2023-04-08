@@ -1,7 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 import { CreatePostDto } from "./dto/create-post.dto";
-import { Post } from "./posts.model";
+import { Post } from "./models/posts.model";
+
 
 @Injectable()
 export class PostsService {
@@ -11,7 +12,7 @@ export class PostsService {
   }
 
   async create(dto: CreatePostDto): Promise<Post> {
-    return this.postRepository.create({ ...dto });
+    return this.postRepository.create({ ...dto } );
   }
 
 
