@@ -29,6 +29,11 @@ export class UsersController {
     return this.usersService.addRole(dto);
   }
 
+  @Delete("/role")
+  async removeRole(@Body() dto: AddRoleDto) {
+    return this.usersService.removeRole(dto);
+  }
+
 
   @Get()
   async findAll(): Promise<User[]> {

@@ -84,6 +84,16 @@ export class UsersService {
     throw new NotFoundException("Пользователь или роль не найдены");
   }
 
+  async removeRole(dto: AddRoleDto) {
+    const user = await this.userModel.findByPk(dto.userId);
+    const role = await this.roleService.getRoleByValue(dto.role);
+    if (role && user) {
+      await user.$remove("role", role.id);
+      return dto;
+    }
+    throw new NotFoundException("Пользователь или роль не найдены");
+  }
+
   async removePost(userId: string, postId: string): Promise<Post> {
     const user = await this.userModel.findByPk(userId);
     if (!user) {
@@ -146,4 +156,6 @@ export class UsersService {
     return posts[0]
 
   }
+
+
 }
