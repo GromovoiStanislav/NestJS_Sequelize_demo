@@ -2,8 +2,8 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 import { CreatePostDto } from "./dto/create-post.dto";
 import { Post } from "./models/posts.model";
-import { UsersService } from "../users/users.service";
 import { UpdatePostDto } from "./dto/update-post.dto";
+import { User } from "../users/models/user.model";
 
 
 @Injectable()
@@ -11,35 +11,49 @@ export class PostsService {
 
   constructor(
     @InjectModel(Post) private postRepository: typeof Post,
-    private readonly usersService: UsersService
+    @InjectModel(User) private userRepository: typeof User
   ) {
   }
 
-  async create(dto: CreatePostDto): Promise<Post> {
-    const user = await this.usersService.findOne(dto.userId);
+  //: Promise<Post>
+  async create(dto: CreatePostDto) {
+    const user = await this.userRepository.findByPk(dto.userId);
     if (!user) {
       throw new NotFoundException("Пользователь не найден");
     }
+
     return this.postRepository.create({ ...dto });
 
-    // const post = await this.postRepository.create({
-    //   title: dto.title,
-    //   content: dto.content
-    // });
+    // return Post.findOrCreate({ where: { ...dto } });
+
+    // const post = await this.postRepository.create({ ...dto });
     // await user.$add("posts", post.id);
     // return post;
+
   }
 
 
   async findOne(id: string): Promise<Post> {
-    const post = await this.postRepository.findByPk(id, { include: ["author"] });
+    //const post = await this.postRepository.findByPk(id, { include: ["author"] });
+
+    //const post = Post.findOne({ where: { id },  include: ["author"]  });
+
+    const post = Post.findByPk(id, { include: ["author"] });
+
     if (!post) {
       throw new NotFoundException("Пост не найден");
     }
     return post;
   }
 
-  async findAll(): Promise<Post[]> {
+//: Promise<Post[]>
+  async findAll() {
+    // return Post.findAndCountAll()
+
+    // return this.postRepository.findAndCountAll()
+
+    //return Post.findAll();
+
     return this.postRepository.findAll();
   }
 
@@ -54,7 +68,7 @@ export class PostsService {
     if (!post) {
       throw new NotFoundException("Пост не найден");
     }
-    await post.destroy()
+    await post.destroy();
     return post;
   }
 
@@ -63,7 +77,7 @@ export class PostsService {
     if (!post) {
       throw new NotFoundException("Пост не найден");
     }
-    await post.update(dto)
-    return post
+    await post.update(dto);
+    return post;
   }
 }

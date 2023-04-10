@@ -5,14 +5,14 @@ import { UsersController } from "./users.controller";
 import { UsersService } from "./users.service";
 import { RolesModule } from "../roles/roles.module";
 
+
 @Module({
   imports: [
     SequelizeModule.forFeature([User]),
     RolesModule
   ],
   providers: [UsersService],
-  controllers: [UsersController],
-  exports:[UsersService]
+  controllers: [UsersController]
 })
 export class UsersModule {
 }
