@@ -16,26 +16,30 @@ export class UsersService {
   }
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    const user = await  this.userModel.create({
+    const user = await this.userModel.create({
       firstName: createUserDto.firstName,
       lastName: createUserDto.lastName
     });
 
     const role = await this.roleService.getRoleByValue("USER");
     await user.$set("roles", [role.id]);
-    user.roles = [role];
+    //await user.$add("role", role.id);
 
     return user;
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
+  async update(id: string, dto: UpdateUserDto): Promise<User> {
     const user = await this.userModel.findByPk(id);
     if (!user) {
       throw new NotFoundException("User not found");
     }
-    Object.assign(user, updateUserDto);
-    await user.save();
-    return user;
+
+    // Object.assign(user, dto);
+    // await user.save();
+
+    await user.update(dto)
+
+    return user
   }
 
 
@@ -45,14 +49,12 @@ export class UsersService {
 
 
   async findOne(id: string): Promise<User> {
-
     // const user = await this.userModel.findOne({
     //   where: { id },
     //   include: { all: true }
     // });
 
-    const user = await this.userModel.findByPk(id,{include: { all: true }});
-
+    const user = await this.userModel.findByPk(id,{ include: { all: true, nested: true }});
     if (!user) {
       throw new NotFoundException("Пользователь не найден");
     }
@@ -61,10 +63,10 @@ export class UsersService {
 
 
   async remove(id: string): Promise<User> {
+    //return this.userModel.destroy({ where: { id } }); // 1 или 2
 
     const user = await this.userModel.findOne({ where: { id }})
     //const user = await this.userModel.findByPk(id);
-
     if (!user) {
       throw new NotFoundException("User not found");
     }
