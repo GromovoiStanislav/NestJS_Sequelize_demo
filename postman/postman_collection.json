@@ -69,14 +69,15 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:3000/roles/ADMIN",
+					"raw": "http://localhost:3000/users/role/ADMIN",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "3000",
 					"path": [
-						"roles",
+						"users",
+						"role",
 						"ADMIN"
 					]
 				}
