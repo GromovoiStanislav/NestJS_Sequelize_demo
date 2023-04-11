@@ -35,6 +35,12 @@ export class UsersController {
   }
 
 
+  @Get("/role/:value")
+  async getUsersByRole(@Param('value') value: string): Promise<User[]> {
+    return this.usersService.getUsersByRole(value);
+  }
+
+
   @Get()
   async findAll(): Promise<User[]> {
     return this.usersService.findAll();

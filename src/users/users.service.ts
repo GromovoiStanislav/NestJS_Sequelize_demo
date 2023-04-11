@@ -8,6 +8,8 @@ import { AddRoleDto } from "./dto/add-role.dto";
 import { Post } from "../posts/models/posts.model";
 import { CreatePostDto } from "./dto/create-post.dto";
 import { UpdatePostDto } from "./dto/update-post.dto";
+import { UserRoles } from "../roles/models/user-roles.model";
+import { Role } from "../roles/models/roles.model";
 
 @Injectable()
 export class UsersService {
@@ -152,10 +154,24 @@ export class UsersService {
       throw new NotFoundException("Пост не найден");
     }
 
-    await posts[0].update(dto)
-    return posts[0]
+    await posts[0].update(dto);
+    return posts[0];
 
   }
 
 
+  async getUsersByRole(value: string): Promise<User[]> {
+    const role = await this.roleService.getRoleByValue(value);
+    if (!role) {
+      throw new NotFoundException("Роль не найдена");
+    }
+    return this.userModel.findAll({
+      include: [
+        {
+          model: Role,
+          where: { id: role.id },
+        }
+      ]
+    });
+  }
 }
